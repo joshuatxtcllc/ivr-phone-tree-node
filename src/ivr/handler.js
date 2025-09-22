@@ -10,9 +10,10 @@ exports.welcome = function welcome() {
   });
 
   gather.say(
-    'Thanks for calling the E T Phone Home Service. ' +
-    'Please press 1 for directions. ' +
-    'Press 2 for a list of planets to call.',
+    'Thank you for calling Jay\'s Frames, your premier custom framing shop in Houston Heights. ' +
+    'Press 1 for our business hours and location. ' +
+    'Press 2 for information about our custom framing services. ' +
+    'Press 3 to speak with one of our framing specialists.',
     {loop: 3}
   );
 
@@ -21,8 +22,9 @@ exports.welcome = function welcome() {
 
 exports.menu = function menu(digit) {
   const optionActions = {
-    '1': giveExtractionPointInstructions,
-    '2': listPlanets,
+    '1': giveBusinessHoursAndLocation,
+    '2': listFramingServices,
+    '3': connectToLiveRepresentative,
   };
 
   return (optionActions[digit])
@@ -30,80 +32,81 @@ exports.menu = function menu(digit) {
     : redirectWelcome();
 };
 
-exports.planets = function planets(digit) {
-  const optionActions = {
-    '2': '+19295566487',
-    '3': '+17262043675',
-    '4': '+16513582243',
-  };
-
-  if (optionActions[digit]) {
-    const twiml = new VoiceResponse();
-    twiml.dial(optionActions[digit]);
-    return twiml.toString();
-  }
-
-  return redirectWelcome();
-};
-
 /**
- * Returns Twiml
+ * Provides business hours and location information
  * @return {String}
  */
-function giveExtractionPointInstructions() {
+function giveBusinessHoursAndLocation() {
   const twiml = new VoiceResponse();
 
   twiml.say(
-    'To get to your extraction point, get on your bike and go down ' +
-    'the street. Then Left down an alley. Avoid the police cars. Turn left ' +
-    'into an unfinished housing development. Fly over the roadblock. Go ' +
-    'passed the moon. Soon after you will see your mother ship.',
-    {voice: 'Polly.Amy', language: 'en-GB'}
+    'Jay\'s Frames is located in the heart of Houston Heights. ' +
+    'We are open Monday through Friday from 9 AM to 6 PM, ' +
+    'and Saturday from 10 AM to 4 PM. We are closed on Sundays. ' +
+    'Visit us for all your custom framing needs. ' +
+    'You can find us easily with plenty of parking available.',
+    {voice: 'Polly.Joanna', language: 'en-US'}
   );
 
-  twiml.say(
-    'Thank you for calling the ET Phone Home Service - the ' +
-    'adventurous alien\'s first choice in intergalactic travel'
-  );
+  twiml.say('Returning to the main menu.');
 
-  twiml.hangup();
+  twiml.redirect('/ivr/welcome');
 
   return twiml.toString();
 }
 
 /**
- * Returns a TwiML to interact with the client
+ * Lists custom framing services offered
  * @return {String}
  */
-function listPlanets() {
+function listFramingServices() {
   const twiml = new VoiceResponse();
 
-  const gather = twiml.gather({
-    action: '/ivr/planets',
-    numDigits: '1',
-    method: 'POST',
-  });
-
-  gather.say(
-    'To call the planet Broh doe As O G, press 2. To call the planet DuhGo ' +
-    'bah, press 3. To call an oober asteroid to your location, press 4. To ' +
-    'go back to the main menu, press the star key ',
-    {voice: 'Polly.Amy', language: 'en-GB', loop: 3}
+  twiml.say(
+    'At Jay\'s Frames, we specialize in custom framing for artwork, photographs, ' +
+    'diplomas, memorabilia, and collectibles. We offer a wide selection of frame styles, ' +
+    'professional matting options, UV-protective glass, and museum-quality materials. ' +
+    'Our experienced team provides expert consultation to preserve and showcase your ' +
+    'treasured items beautifully. We also offer shadow boxes for three-dimensional pieces.',
+    {voice: 'Polly.Joanna', language: 'en-US'}
   );
+
+  twiml.say('Returning to the main menu.');
+
+  twiml.redirect('/ivr/welcome');
 
   return twiml.toString();
 }
 
 /**
- * Returns an xml with the redirect
+ * Connects caller to a live representative
+ * @return {String}
+ */
+function connectToLiveRepresentative() {
+  const twiml = new VoiceResponse();
+
+  twiml.say(
+    'Please hold while we connect you to one of our framing specialists. ' +
+    'They will be happy to assist you with your custom framing needs.',
+    {voice: 'Polly.Joanna', language: 'en-US'}
+  );
+
+  // Replace with Jay's Frames actual phone number
+  twiml.dial('+17135551234');
+
+  return twiml.toString();
+}
+
+/**
+ * Returns an xml with the redirect to welcome menu
  * @return {String}
  */
 function redirectWelcome() {
   const twiml = new VoiceResponse();
 
-  twiml.say('Returning to the main menu', {
-    voice: 'Polly.Amy',
-    language: 'en-GB',
+  twiml.say('I\'m sorry, that\'s not a valid option. Returning to the main menu.', {
+    voice: 'Polly.Joanna',
+    language: 'en-US',
   });
 
   twiml.redirect('/ivr/welcome');

@@ -1,66 +1,123 @@
-﻿<a href="https://www.twilio.com">
-  <img src="https://static0.twilio.com/marketing/bundles/marketing/img/logos/wordmark-red.svg" alt="Twilio" width="250" />
-</a>
+# Jay's Frames IVR Phone System
 
-# IVR Phone Tree: IVR for beginners. Powered by Twilio - Node.js/Express
+A professional Interactive Voice Response (IVR) phone system for Jay's Frames custom framing shop in Houston Heights, powered by Twilio and Node.js/Express.
 
-[![Node.js CI](https://github.com/TwilioDevEd/ivr-phone-tree-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/TwilioDevEd/ivr-phone-tree-node/actions/workflows/node.js.yml)
+## Features
 
-Create a seamless customer service experience by building an IVR Phone Tree for your company. IVR systems allow your customers to access the people and information they need.
+- **Professional Welcome Message**: Greets customers with Jay's Frames branding
+- **Business Information**: Provides hours and location details
+- **Service Information**: Details about custom framing services offered
+- **Live Representative Connection**: Routes calls to framing specialists
+- **Error Handling**: Gracefully handles invalid inputs
 
-[Read the full tutorial here!](https://www.twilio.com/docs/tutorials/walkthrough/ivr-phone-tree/node/express)
+## Phone Menu Options
+
+1. **Press 1**: Business hours and location information
+2. **Press 2**: Information about custom framing services
+3. **Press 3**: Connect to a live framing specialist
+
+## Services Highlighted
+
+- Custom framing for artwork and photographs
+- Diploma and certificate framing
+- Memorabilia and collectibles framing
+- Professional matting options
+- UV-protective glass
+- Museum-quality materials
+- Shadow boxes for 3D items
+- Expert consultation services
 
 ## Local Development
 
-This project is build using [Express](http://expressjs.com/) web framework and
-depends on [MongoDB](https://www.mongodb.com).
-
+This project is built using [Express](http://expressjs.com/) web framework and depends on [Twilio](https://www.twilio.com).
 
 1. First clone this repository and `cd` into it.
 
    ```bash
-   git clone git@github.com:TwilioDevEd/ivr-phone-tree-node.git \
-   cd ivr-phone-tree-node
+   git clone [repository-url]
+   cd jays-frames-ivr
    ```
-1. Install project's dependencies.
+
+2. Install project's dependencies.
 
    ```bash
    npm install
    ```
 
-1. Make sure the tests succeed.
+3. Make sure the tests succeed.
 
    ```bash
    npm test
    ```
 
-1. Start the development server.
+4. Start the development server.
 
    ```bash
    npm start
    ```
 
-   Alternatively you might also consider using [nodemon](https://github.com/remy/nodemon) for this. It works just like
-   the node command, but automatically restarts your application when you change any source code files.
+5. Check it out at [http://localhost:3000](http://localhost:3000).
 
-   ```bash
-   npm install -g nodemon \
-   nodemon .
-   ```
-
-1. Check it out at [http://localhost:3000](http://localhost:3000).
-
-1. Expose the application to the wider Internet using [ngrok](https://ngrok.com/).
+6. Expose the application to the wider Internet using [ngrok](https://ngrok.com/).
 
    ```bash
    ngrok http 3000
    ```
 
-1. Provision a number under the [Twilio's Manage Numbers](https://www.twilio.com/console/phone-numbers/incoming)
-   page on your account. Set the voice URL for the number to http://[your-ngrok-subdomain].ngrok.io/ivr/welcome
+7. Configure your Twilio phone number:
+   - Go to [Twilio's Manage Numbers](https://www.twilio.com/console/phone-numbers/incoming)
+   - Set the voice URL to: `http://[your-ngrok-subdomain].ngrok.io/ivr/welcome`
 
-## Meta
+## Configuration
 
-* No warranty expressed or implied. Software is as is. Diggity.
-* [MIT License](http://www.opensource.org/licenses/mit-license.html)
-* Lovingly crafted by Twilio Developer Education.
+### Important: Update Phone Number
+
+Before deploying, update the phone number in `src/ivr/handler.js` in the `connectToLiveRepresentative()` function:
+
+```javascript
+// Replace with Jay's Frames actual phone number
+twiml.dial('+17135551234');
+```
+
+### Business Hours
+
+Current configuration shows:
+- Monday-Friday: 9 AM to 6 PM
+- Saturday: 10 AM to 4 PM  
+- Sunday: Closed
+
+Update these hours in the `giveBusinessHoursAndLocation()` function as needed.
+
+## Customization
+
+You can easily customize:
+- Welcome message and business name
+- Menu options and routing
+- Business hours and location details
+- Service descriptions
+- Voice settings (currently using Polly.Joanna)
+
+## Testing
+
+The application includes comprehensive tests for all IVR functionality:
+
+```bash
+npm test
+```
+
+## Deployment
+
+For production deployment:
+1. Set up a Twilio account and phone number
+2. Deploy to your preferred hosting service
+3. Configure the Twilio webhook URL
+4. Update the representative phone number
+5. Test all menu options thoroughly
+
+## License
+
+MIT License - See LICENSE file for details.
+
+## Support
+
+For technical support or customization requests, contact your development team.

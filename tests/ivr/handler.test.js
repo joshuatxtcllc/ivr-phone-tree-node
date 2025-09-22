@@ -1,7 +1,7 @@
-const {welcome, menu, planets} = require('../../src/ivr/handler');
+const {welcome, menu} = require('../../src/ivr/handler');
 
 describe('IvrHandler#Welcome', () => {
-  it('should serve TwiML with gather', () => {
+  it('should serve TwiML with gather for Jay\'s Frames', () => {
     const twiml = welcome();
     const count = countWord(twiml);
 
@@ -15,68 +15,14 @@ describe('IvrHandler#Welcome', () => {
     expect(twiml).toContain('loop="3"');
 
     // TwiML content
-    expect(twiml).toContain('Thanks for calling the E T Phone Home Service.');
+    expect(twiml).toContain('Thank you for calling Jay\'s Frames');
+    expect(twiml).toContain('Houston Heights');
   });
 });
 
 describe('IvrHandler#Menu', () => {
-  it('should redirect to welcomes with digits other than 1 or 2', () => {
-    const twiml = menu();
-    const count = countWord(twiml);
-
-    // TwiML verbs
-    expect(count('Say')).toBe(2);
-    expect(count('Say')).toBe(2);
-
-    // TwiML content
-    expect(twiml).toContain('welcome');
-  });
-
-  it('should serve TwiML with say twice and hangup', () => {
-    const twiml = menu('1');
-    const count = countWord(twiml);
-
-    // TwiML verbs
-    expect(count('Say')).toBe(4);
-    expect(count('Hangup')).toBe(1);
-
-    // TwiML content
-    expect(twiml).toContain(
-      'To get to your extraction point, get on your bike and go down the ' +
-      'street. Then Left down an alley. Avoid the police cars. Turn left ' +
-      'into an unfinished housing development. Fly over the roadblock. Go ' +
-      'passed the moon. Soon after you will see your mother ship.'
-    );
-    expect(twiml).toContain(
-      'Thank you for calling the ET Phone Home Service - the ' +
-      'adventurous alien\'s first choice in intergalactic travel'
-    );
-  });
-
-  it('should serve TwiML with gather and say', () => {
-    const twiml = menu('2');
-    const count = countWord(twiml);
-
-    // TwiML verbs
-    expect(count('Gather')).toBe(2);
-    expect(count('Say')).toBe(2);
-
-    // TwiML options
-    expect(twiml).toContain('action="/ivr/planets"');
-    expect(twiml).toContain('numDigits="1"');
-
-    // TwiML content
-    expect(twiml).toContain(
-      'To call the planet Broh doe As O G, press 2. To call the planet DuhGo ' +
-      'bah, press 3. To call an oober asteroid to your location, press 4. To ' +
-      'go back to the main menu, press the star key '
-    );
-  });
-});
-
-describe('IvrHandler#Planets', () => {
-  it('should redirect to welcomes with digits other than 2, 3 or 4', () => {
-    const twiml = planets();
+  it('should redirect to welcome with invalid digits', () => {
+    const twiml = menu('9');
     const count = countWord(twiml);
 
     // TwiML verbs
@@ -85,16 +31,47 @@ describe('IvrHandler#Planets', () => {
 
     // TwiML content
     expect(twiml).toContain('welcome');
+    expect(twiml).toContain('not a valid option');
   });
 
-  it('should serve TwiML with dial', () => {
-    const twiml = planets('4');
+  it('should provide business hours and location for option 1', () => {
+    const twiml = menu('1');
+    const count = countWord(twiml);
 
     // TwiML verbs
+    expect(count('Say')).toBe(4);
+    expect(count('Redirect')).toBe(2);
+
+    // TwiML content
+    expect(twiml).toContain('Houston Heights');
+    expect(twiml).toContain('Monday through Friday');
+    expect(twiml).toContain('9 AM to 6 PM');
+  });
+
+  it('should provide framing services info for option 2', () => {
+    const twiml = menu('2');
+    const count = countWord(twiml);
+
+    // TwiML verbs
+    expect(count('Say')).toBe(4);
+    expect(count('Redirect')).toBe(2);
+
+    // TwiML content
+    expect(twiml).toContain('custom framing');
+    expect(twiml).toContain('artwork, photographs');
+    expect(twiml).toContain('UV-protective glass');
+  });
+
+  it('should connect to representative for option 3', () => {
+    const twiml = menu('3');
+
+    // TwiML verbs
+    expect(twiml).toContain('Say');
     expect(twiml).toContain('Dial');
 
     // TwiML content
-    expect(twiml).toContain('+16513582243');
+    expect(twiml).toContain('framing specialists');
+    expect(twiml).toContain('+17135551234');
   });
 });
 
