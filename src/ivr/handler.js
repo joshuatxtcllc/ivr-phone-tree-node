@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const VoiceResponse = require('twilio').twiml.VoiceResponse;
 
 exports.welcome = function welcome() {
@@ -91,8 +93,8 @@ function connectToLiveRepresentative() {
     {voice: 'Polly.Joanna', language: 'en-US'}
   );
 
-  // Replace with Jay's Frames actual phone number
-  twiml.dial('+17135551234');
+  // Use the configured Twilio phone number or a forwarding number
+  twiml.dial(process.env.TWILIO_PHONE_NUMBER || '+17135551234');
 
   return twiml.toString();
 }

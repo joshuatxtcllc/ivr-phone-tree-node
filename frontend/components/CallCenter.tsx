@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import {
   PhoneIcon,
   PhoneXMarkIcon,
@@ -15,8 +16,21 @@ export default function CallCenter() {
   const handleCall = () => {
     if (phoneNumber) {
       setIsCallActive(true)
-      // Here you would integrate with Twilio to make the actual call
-      console.log('Making call to:', phoneNumber)
+      
+      // Make actual call via Twilio API
+      axios.post('/api/calls/make', {
+        to: phoneNumber,
+        from: '+13466392728', // Your Twilio number
+        url: `${window.location.origin}/ivr/welcome`
+      })
+      .then(response => {
+        console.log('Call initiated:', response.data)
+      })
+      .catch(error => {
+        console.error('Call failed:', error)
+        setIsCallActive(false)
+        alert('Failed to make call. Please check your connection.')
+      })
     }
   }
 
