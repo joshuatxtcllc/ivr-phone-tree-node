@@ -30,15 +30,29 @@
     "node": ">=6.x"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@heroicons/react": "^2.2.0",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "autoprefixer": "^10.4.21",
+    "axios": "^1.12.2",
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.3.2",
     "express": "~4.14.0",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
+    "postcss": "^8.5.6",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "recharts": "^3.2.1",
     "serve-favicon": "~2.3.2",
+    "socket.io-client": "^4.8.1",
     "stylus": "^0.64.0",
-    "twilio": "^3.0.0-rc.17"
+    "tailwindcss": "^4.1.13",
+    "twilio": "^3.0.0-rc.17",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
