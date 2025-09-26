@@ -35,23 +35,23 @@ const actions = [
 
 export default function QuickActions() {
   return (
-    <div className="card">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h2>
+    <div className="card card-hover">
+      <h2 className="text-xl font-bold text-slate-900 mb-8">Quick Actions</h2>
       
-      <div className="space-y-3">
+      <div className="space-y-4">
         {actions.map((action, index) => {
           const Icon = action.icon
           return (
             <button
               key={index}
-              className="w-full flex items-center p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors duration-200 text-left"
+              className="w-full flex items-center p-5 bg-gradient-to-r from-slate-50 to-slate-100/50 hover:from-white hover:to-slate-50 rounded-xl transition-all duration-200 text-left border border-slate-200/60 hover:shadow-md hover:-translate-y-0.5 group"
             >
-              <div className={`p-2 rounded-lg ${action.color} text-white mr-4`}>
-                <Icon className="w-5 h-5" />
+              <div className={`p-3 rounded-xl ${action.color} text-white mr-4 shadow-lg group-hover:scale-110 transition-transform duration-200`}>
+                <Icon className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-medium text-gray-900">{action.title}</p>
-                <p className="text-sm text-gray-500">{action.description}</p>
+                <p className="font-semibold text-slate-900 group-hover:text-slate-800">{action.title}</p>
+                <p className="text-sm text-slate-600">{action.description}</p>
               </div>
             </button>
           )

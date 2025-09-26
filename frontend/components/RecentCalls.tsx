@@ -38,42 +38,40 @@ const recentCalls = [
 
 export default function RecentCalls() {
   return (
-    <div className="card">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-gray-900">Recent Calls</h2>
-        <button className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+    <div className="card card-hover">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-xl font-bold text-slate-900">Recent Activity</h2>
+        <button className="text-sm text-blue-600 hover:text-blue-700 font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition-all duration-200">
           View all
         </button>
       </div>
       
-      <div className="space-y-4">
+      <div className="space-y-3">
         {recentCalls.map((call) => (
-          <div key={call.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <div className={`p-2 rounded-full ${
-                call.type === 'inbound' ? 'bg-green-100' : 'bg-blue-100'
+          <div key={call.id} className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-slate-100/50 rounded-xl border border-slate-200/60 hover:shadow-md transition-all duration-200">
+            <div className="flex items-center space-x-4">
+              <div className={`p-3 rounded-xl shadow-sm ${
+                call.type === 'inbound' ? 'bg-gradient-to-r from-emerald-500 to-emerald-600' : 'bg-gradient-to-r from-blue-500 to-blue-600'
               }`}>
                 {call.type === 'inbound' ? (
-                  <PhoneArrowDownLeftIcon className={`w-4 h-4 ${
-                    call.type === 'inbound' ? 'text-green-600' : 'text-blue-600'
-                  }`} />
+                  <PhoneArrowDownLeftIcon className="w-5 h-5 text-white" />
                 ) : (
-                  <PhoneArrowUpRightIcon className="w-4 h-4 text-blue-600" />
+                  <PhoneArrowUpRightIcon className="w-5 h-5 text-white" />
                 )}
               </div>
               <div>
-                <p className="font-medium text-gray-900">{call.number}</p>
-                <p className="text-sm text-gray-500">{call.time}</p>
+                <p className="font-semibold text-slate-900">{call.number}</p>
+                <p className="text-sm text-slate-500">{call.time}</p>
               </div>
             </div>
             
             <div className="text-right">
-              <p className="font-medium text-gray-900">{call.duration}</p>
-              <p className={`text-sm ${
-                call.status === 'completed' ? 'text-green-600' : 'text-red-600'
+              <p className="font-semibold text-slate-900">{call.duration}</p>
+              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                call.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
               }`}>
                 {call.status}
-              </p>
+              </span>
             </div>
           </div>
         ))}

@@ -10,11 +10,16 @@ router.post('/make', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields: to, from' });
   }
 
-  const result = await makeCall(to, from, url || '/ivr/welcome');
+  // Construct full URL for Twilio webhook
+  const baseUrl = req.protocol + '://' + req.get('host');
+  const webhookUrl = url || `${baseUrl}/ivr/welcome`;
+  
+  const result = await makeCall(to, from, webhookUrl);
   
   if (result.success) {
     res.json({ success: true, callSid: result.callSid });
   } else {
+    console.error('Call error:', result.error);
     res.status(500).json({ error: result.error });
   }
 });

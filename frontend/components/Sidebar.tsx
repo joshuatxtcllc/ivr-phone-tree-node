@@ -22,13 +22,20 @@ const navigation = [
 
 export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
   return (
-    <div className="w-64 bg-white shadow-sm border-r border-gray-200">
-      <div className="p-6">
-        <h1 className="text-xl font-bold text-gray-900">Communications Hub</h1>
-        <p className="text-sm text-gray-500 mt-1">Jay's Frames</p>
+    <div className="w-72 bg-gradient-to-b from-slate-900 to-slate-800 shadow-xl border-r border-slate-700/50">
+      <div className="p-8">
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+            <PhoneIcon className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">CommHub Pro</h1>
+            <p className="text-sm text-slate-400">Jay's Frames</p>
+          </div>
+        </div>
       </div>
       
-      <nav className="px-4 space-y-1">
+      <nav className="px-6 space-y-2">
         {navigation.map((item) => {
           const Icon = item.icon
           const isActive = activeView === item.id
@@ -37,13 +44,13 @@ export default function Sidebar({ activeView, setActiveView }: SidebarProps) {
             <button
               key={item.name}
               onClick={() => setActiveView(item.id)}
-              className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+              className={`sidebar-item w-full ${
                 isActive
-                  ? 'bg-primary-50 text-primary-700 border-r-2 border-primary-600'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'sidebar-item-active bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
+                  : 'sidebar-item-inactive text-slate-300 hover:bg-slate-700/50 hover:text-white'
               }`}
             >
-              <Icon className="w-5 h-5 mr-3" />
+              <Icon className="w-5 h-5 mr-4" />
               {item.name}
             </button>
           )

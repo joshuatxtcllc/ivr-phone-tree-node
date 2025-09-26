@@ -18,10 +18,9 @@ export default function CallCenter() {
       setIsCallActive(true)
       
       // Make actual call via Twilio API
-      axios.post('/api/calls/make', {
+      axios.post('http://localhost:3000/api/calls/make', {
         to: phoneNumber,
-        from: '+13466392728', // Your Twilio number
-        url: `${window.location.origin}/ivr/welcome`
+        from: '+13466392728' // Your Twilio number
       })
       .then(response => {
         console.log('Call initiated:', response.data)
@@ -42,18 +41,18 @@ export default function CallCenter() {
   }
 
   return (
-    <div className="p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Call Center</h1>
-        <p className="text-gray-600 mt-1">Make and manage calls directly from your dashboard</p>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">Call Center</h1>
+        <p className="text-slate-600 mt-2 text-lg">Make and manage calls directly from your dashboard</p>
       </div>
 
-      <div className="max-w-md mx-auto">
-        <div className="card">
+      <div className="max-w-lg mx-auto">
+        <div className="card card-hover">
           {!isCallActive ? (
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-3 uppercase tracking-wide">
                   Phone Number
                 </label>
                 <input
@@ -62,51 +61,54 @@ export default function CallCenter() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+1 (713) 555-0123"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="input-field text-lg"
                 />
               </div>
               
               <button
                 onClick={handleCall}
                 disabled={!phoneNumber}
-                className="w-full flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors duration-200"
+                className="w-full flex items-center justify-center px-8 py-4 btn-success disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none text-lg"
               >
-                <PhoneIcon className="w-5 h-5 mr-2" />
+                <PhoneIcon className="w-6 h-6 mr-3" />
                 Call
               </button>
             </div>
           ) : (
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-8">
               <div>
-                <p className="text-lg font-medium text-gray-900">Calling...</p>
-                <p className="text-gray-600">{phoneNumber}</p>
+                <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                  <PhoneIcon className="w-10 h-10 text-white" />
+                </div>
+                <p className="text-xl font-bold text-slate-900">Calling...</p>
+                <p className="text-slate-600 text-lg">{phoneNumber}</p>
               </div>
               
-              <div className="flex justify-center space-x-4">
+              <div className="flex justify-center space-x-6">
                 <button
                   onClick={() => setIsMuted(!isMuted)}
-                  className={`p-3 rounded-full transition-colors duration-200 ${
-                    isMuted ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  className={`p-4 rounded-xl transition-all duration-200 shadow-lg ${
+                    isMuted ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
                   }`}
                 >
-                  <MicrophoneIcon className="w-6 h-6" />
+                  <MicrophoneIcon className="w-7 h-7" />
                 </button>
                 
                 <button
                   onClick={() => setIsSpeakerOn(!isSpeakerOn)}
-                  className={`p-3 rounded-full transition-colors duration-200 ${
-                    isSpeakerOn ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  className={`p-4 rounded-xl transition-all duration-200 shadow-lg ${
+                    isSpeakerOn ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
                   }`}
                 >
-                  <SpeakerWaveIcon className="w-6 h-6" />
+                  <SpeakerWaveIcon className="w-7 h-7" />
                 </button>
               </div>
               
               <button
                 onClick={handleHangup}
-                className="w-full flex items-center justify-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200"
+                className="w-full flex items-center justify-center px-8 py-4 btn-danger text-lg"
               >
-                <PhoneXMarkIcon className="w-5 h-5 mr-2" />
+                <PhoneXMarkIcon className="w-6 h-6 mr-3" />
                 Hang Up
               </button>
             </div>
