@@ -6,17 +6,29 @@ const router = express.Router();
 router.post('/make', async (req, res) => {
   const { to, from, url } = req.body;
   
+  console.log('Call request received:', { to, from, url });
+  
   if (!to || !from) {
     return res.status(400).json({ error: 'Missing required fields: to, from' });
   }
 
-  // Construct full URL for Twilio webhook
-  const baseUrl = req.protocol + '://' + req.get('host');
-  const webhookUrl = url || `${baseUrl}/ivr/welcome`;
+  // Use a more reliable webhook URL construction
+  let webhookUrl;
+  if (url) {
+    webhookUrl = url;
+  } else {
+    // For development, use ngrok URL if available, otherwise construct from request
+    const host = req.get('host');
+    const protocol = req.get('x-forwarded-proto') || req.protocol;
+    webhookUrl = `${protocol}://${host}/ivr/welcome`;
+  }
+  
+  console.log('Using webhook URL:', webhookUrl);
   
   const result = await makeCall(to, from, webhookUrl);
   
   if (result.success) {
+    console.log('Call successful:', result.callSid);
     res.json({ success: true, callSid: result.callSid });
   } else {
     console.error('Call error:', result.error);

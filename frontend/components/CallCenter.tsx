@@ -18,17 +18,21 @@ export default function CallCenter() {
       setIsCallActive(true)
       
       // Make actual call via Twilio API
-      axios.post('http://localhost:3000/api/calls/make', {
+      axios.post('/api/calls/make', {
         to: phoneNumber,
-        from: '+13466392728' // Your Twilio number
+        from: process.env.VITE_TWILIO_PHONE_NUMBER || '+13466392728'
       })
       .then(response => {
         console.log('Call initiated:', response.data)
+        // Keep call active state for demo purposes
       })
       .catch(error => {
         console.error('Call failed:', error)
         setIsCallActive(false)
-        alert('Failed to make call. Please check your connection.')
+        
+        // Show more detailed error message
+        const errorMessage = error.response?.data?.error || error.message || 'Unknown error occurred'
+        alert(`Failed to make call: ${errorMessage}`)
       })
     }
   }

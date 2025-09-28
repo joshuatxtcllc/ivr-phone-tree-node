@@ -13,15 +13,31 @@ module.exports = {
   // Make an outbound call
   async makeCall(to, from, url) {
     try {
+      console.log('Twilio makeCall called with:', { to, from, url });
+      
+      if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+        throw new Error('Twilio credentials not configured');
+      }
+      
       const call = await client.calls.create({
         to,
         from,
         url,
+        method: 'POST',
+        timeout: 60,
+        record: false
       });
+      
+      console.log('Twilio call created:', call.sid);
       return { success: true, callSid: call.sid };
     } catch (error) {
       console.error('Error making call:', error);
-      return { success: false, error: error.message };
+      return { 
+        success: false, 
+        error: error.message,
+        code: error.code,
+        moreInfo: error.moreInfo 
+      };
     }
   },
 
