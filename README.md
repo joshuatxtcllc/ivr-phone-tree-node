@@ -15,8 +15,7 @@ A professional Interactive Voice Response (IVR) phone system for Jay's Frames cu
 1. **Press 1**: Business hours and location information
 2. **Press 2**: Information about custom framing services
 3. **Press 3**: Connect to a live framing specialist
-
-## Services Highlighted
+4. **Press 4**: Order status Updste
 
 - Custom framing for artwork and photographs
 - Diploma and certificate framing
