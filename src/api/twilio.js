@@ -14,12 +14,18 @@ try {
   if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
     console.error('❌ Twilio credentials missing! Please check your .env file.');
     console.error('Required variables: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER');
+    console.error('Current values:');
+    console.error('- TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID ? `${process.env.TWILIO_ACCOUNT_SID.substring(0, 10)}...` : 'undefined');
+    console.error('- TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN ? 'SET (hidden)' : 'undefined');
+    console.error('- TWILIO_PHONE_NUMBER:', process.env.TWILIO_PHONE_NUMBER || 'undefined');
   } else {
     client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     console.log('✅ Twilio client initialized successfully');
+    console.log('✅ Using phone number:', process.env.TWILIO_PHONE_NUMBER);
   }
 } catch (error) {
   console.error('❌ Failed to initialize Twilio client:', error.message);
+  console.error('❌ Full error:', error);
 }
 
 module.exports = {

@@ -11,6 +11,10 @@ router.post('/make', async (req, res) => {
   console.log('To:', to);
   console.log('From:', from);
   console.log('URL:', url);
+  console.log('Environment check:');
+  console.log('- TWILIO_ACCOUNT_SID:', process.env.TWILIO_ACCOUNT_SID ? 'SET' : 'NOT SET');
+  console.log('- TWILIO_AUTH_TOKEN:', process.env.TWILIO_AUTH_TOKEN ? 'SET' : 'NOT SET');
+  console.log('- TWILIO_PHONE_NUMBER:', process.env.TWILIO_PHONE_NUMBER || 'NOT SET');
   
   if (!to || !from) {
     console.error('❌ Missing required fields');
@@ -33,7 +37,38 @@ router.post('/make', async (req, res) => {
   }
   
   console.log('📱 Calling Twilio makeCall function...');
-  const result = await makeCall(to, from, webhookUrl);
+  try {
+    const result = await makeCall(to, from, webhookUrl);
+    console.log('📋 Twilio result:', result);
+    
+    if (result.success) {
+      console.log('✅ Call successful:', result.callSid);
+      res.json({ success: true, callSid: result.callSid });
+    } else {
+      console.error('❌ === CALL FAILED ===');
+      console.error('Error:', result.error);
+      console.error('Code:', result.code);
+      console.error('More info:', result.moreInfo);
+      res.status(500).json({ 
+        error: result.error,
+        code: result.code,
+        moreInfo: result.moreInfo 
+      });
+    }
+  } catch (error) {
+    console.error('❌ === UNEXPECTED ERROR IN CALLS.JS ===');
+    console.error('Error type:', typeof error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Full error object:', error);
+    
+    res.status(500).json({ 
+      error: `Unexpected error: ${error.message}`,
+      type: typeof error,
+      stack: error.stack
+    });
+  }
+});
   console.log('📋 Twilio result:', result);
   
   if (result.success) {
