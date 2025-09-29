@@ -69,23 +69,6 @@ router.post('/make', async (req, res) => {
     });
   }
 });
-  console.log('📋 Twilio result:', result);
-  
-  if (result.success) {
-    console.log('✅ Call successful:', result.callSid);
-    res.json({ success: true, callSid: result.callSid });
-  } else {
-    console.error('❌ === CALL FAILED ===');
-    console.error('Error:', result.error);
-    console.error('Code:', result.code);
-    console.error('More info:', result.moreInfo);
-    res.status(500).json({ 
-      error: result.error,
-      code: result.code,
-      moreInfo: result.moreInfo 
-    });
-  }
-});
 
 // Get call history
 router.get('/history', async (req, res) => {
