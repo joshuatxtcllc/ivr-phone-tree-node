@@ -56,17 +56,36 @@ export default function CallCenter() {
       setCallStatus('')
       
       // Show detailed error message
-      const errorData = error.response?.data
+      // Log the full error for debugging
+      console.error('Full error object:', error)
+      console.error('Error response:', error.response)
+      console.error('Error message:', error.message)
+      
       let errorMessage = 'Unknown error occurred'
       
-      if (errorData?.error) {
-        errorMessage = errorData.error
-        if (errorData.code) {
-          errorMessage += ` (Code: ${errorData.code})`
+      if (error.response) {
+        // Server responded with error status
+        const errorData = error.response.data
+        console.error('Server error data:', errorData)
+        
+        if (errorData?.error) {
+          errorMessage = errorData.error
+          if (errorData.code) {
+            errorMessage += ` (Code: ${errorData.code})`
+          }
+          if (errorData.moreInfo) {
+            errorMessage += `\nMore info: ${errorData.moreInfo}`
+          }
+        } else {
+          errorMessage = `Server error: ${error.response.status} ${error.response.statusText}`
         }
-        if (errorData.moreInfo) {
-          errorMessage += `\nMore info: ${errorData.moreInfo}`
-        }
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'No response from server. Check if the backend is running.'
+        console.error('No response received:', error.request)
+      } else {
+        // Something else happened
+        errorMessage = error.message || 'Request setup failed'
       }
       
       alert(`Failed to make call: ${errorMessage}`)

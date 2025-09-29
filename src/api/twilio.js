@@ -13,16 +13,22 @@ module.exports = {
   // Make an outbound call
   async makeCall(to, from, url) {
     try {
-      console.log('Twilio makeCall called with:', { to, from, url });
+      console.log('=== TWILIO MAKECALL FUNCTION ===');
+      console.log('Parameters:', { to, from, url });
+      console.log('Account SID:', process.env.TWILIO_ACCOUNT_SID ? 'Set' : 'NOT SET');
+      console.log('Auth Token:', process.env.TWILIO_AUTH_TOKEN ? 'Set' : 'NOT SET');
       
       if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+        console.error('Twilio credentials missing');
         throw new Error('Twilio credentials not configured. Please check your .env file.');
       }
       
       if (!from || !from.startsWith('+')) {
+        console.error('Invalid from number:', from);
         throw new Error('From number must be a valid Twilio phone number in E.164 format');
       }
       
+      console.log('Creating Twilio call...');
       const call = await client.calls.create({
         to,
         from,
@@ -38,7 +44,12 @@ module.exports = {
       console.log('Twilio call created:', call.sid);
       return { success: true, callSid: call.sid };
     } catch (error) {
-      console.error('Error making call:', error);
+      console.error('=== TWILIO ERROR ===');
+      console.error('Error message:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Error status:', error.status);
+      console.error('More info:', error.moreInfo);
+      console.error('Full error:', error);
       return { 
         success: false, 
         error: error.message,
