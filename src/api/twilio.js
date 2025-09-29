@@ -1,11 +1,26 @@
 const twilio = require('twilio');
 require('dotenv').config();
 
+// Log environment variables (without exposing sensitive data)
+console.log('=== TWILIO CONFIGURATION CHECK ===');
+console.log('Account SID:', process.env.TWILIO_ACCOUNT_SID ? `${process.env.TWILIO_ACCOUNT_SID.substring(0, 10)}...` : 'NOT SET');
+console.log('Auth Token:', process.env.TWILIO_AUTH_TOKEN ? 'SET (hidden)' : 'NOT SET');
+console.log('Phone Number:', process.env.TWILIO_PHONE_NUMBER || 'NOT SET');
+console.log('=====================================');
+
 // Initialize Twilio client
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+let client;
+try {
+  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+    console.error('❌ Twilio credentials missing! Please check your .env file.');
+    console.error('Required variables: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER');
+  } else {
+    client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    console.log('✅ Twilio client initialized successfully');
+  }
+} catch (error) {
+  console.error('❌ Failed to initialize Twilio client:', error.message);
+}
 
 module.exports = {
   client,
@@ -15,11 +30,9 @@ module.exports = {
     try {
       console.log('=== TWILIO MAKECALL FUNCTION ===');
       console.log('Parameters:', { to, from, url });
-      console.log('Account SID:', process.env.TWILIO_ACCOUNT_SID ? 'Set' : 'NOT SET');
-      console.log('Auth Token:', process.env.TWILIO_AUTH_TOKEN ? 'Set' : 'NOT SET');
       
-      if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-        console.error('Twilio credentials missing');
+      if (!client) {
+        console.error('❌ Twilio client not initialized');
         throw new Error('Twilio credentials not configured. Please check your .env file.');
       }
       
@@ -41,15 +54,14 @@ module.exports = {
         statusCallbackMethod: 'POST'
       });
       
-      console.log('Twilio call created:', call.sid);
+      console.log('✅ Twilio call created:', call.sid);
       return { success: true, callSid: call.sid };
     } catch (error) {
-      console.error('=== TWILIO ERROR ===');
+      console.error('❌ === TWILIO ERROR ===');
       console.error('Error message:', error.message);
       console.error('Error code:', error.code);
       console.error('Error status:', error.status);
       console.error('More info:', error.moreInfo);
-      console.error('Full error:', error);
       return { 
         success: false, 
         error: error.message,

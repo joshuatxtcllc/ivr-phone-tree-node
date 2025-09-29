@@ -6,14 +6,14 @@ const router = express.Router();
 router.post('/make', async (req, res) => {
   const { to, from, url } = req.body;
   
-  console.log('=== CALL REQUEST RECEIVED ===');
+  console.log('📞 === CALL REQUEST RECEIVED ===');
   console.log('Request body:', req.body);
   console.log('To:', to);
   console.log('From:', from);
   console.log('URL:', url);
   
   if (!to || !from) {
-    console.error('Missing required fields');
+    console.error('❌ Missing required fields');
     return res.status(400).json({ error: 'Missing required fields: to, from' });
   }
 
@@ -22,29 +22,28 @@ router.post('/make', async (req, res) => {
   const protocol = req.get('x-forwarded-proto') || req.protocol;
   const webhookUrl = url || `${protocol}://${host}/ivr/welcome`;
   
-  console.log('Constructed webhook URL:', webhookUrl);
+  console.log('🔗 Constructed webhook URL:', webhookUrl);
   console.log('Host:', host);
   console.log('Protocol:', protocol);
   
   // Validate phone number format
   if (!to.startsWith('+')) {
-    console.error('Invalid phone number format:', to);
+    console.error('❌ Invalid phone number format:', to);
     return res.status(400).json({ error: 'Phone number must be in E.164 format (e.g., +1234567890)' });
   }
   
-  console.log('Calling Twilio makeCall function...');
+  console.log('📱 Calling Twilio makeCall function...');
   const result = await makeCall(to, from, webhookUrl);
-  console.log('Twilio result:', result);
+  console.log('📋 Twilio result:', result);
   
   if (result.success) {
-    console.log('Call successful:', result.callSid);
+    console.log('✅ Call successful:', result.callSid);
     res.json({ success: true, callSid: result.callSid });
   } else {
-    console.error('=== CALL FAILED ===');
+    console.error('❌ === CALL FAILED ===');
     console.error('Error:', result.error);
     console.error('Code:', result.code);
     console.error('More info:', result.moreInfo);
-    console.error('Details:', result.details);
     res.status(500).json({ 
       error: result.error,
       code: result.code,
