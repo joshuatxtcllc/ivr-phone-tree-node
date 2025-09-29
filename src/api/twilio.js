@@ -16,7 +16,11 @@ module.exports = {
       console.log('Twilio makeCall called with:', { to, from, url });
       
       if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
-        throw new Error('Twilio credentials not configured');
+        throw new Error('Twilio credentials not configured. Please check your .env file.');
+      }
+      
+      if (!from || !from.startsWith('+')) {
+        throw new Error('From number must be a valid Twilio phone number in E.164 format');
       }
       
       const call = await client.calls.create({
@@ -24,8 +28,11 @@ module.exports = {
         from,
         url,
         method: 'POST',
-        timeout: 60,
-        record: false
+        timeout: 30,
+        record: false,
+        statusCallback: url.replace('/welcome', '/status'),
+        statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed'],
+        statusCallbackMethod: 'POST'
       });
       
       console.log('Twilio call created:', call.sid);
@@ -36,7 +43,8 @@ module.exports = {
         success: false, 
         error: error.message,
         code: error.code,
-        moreInfo: error.moreInfo 
+        moreInfo: error.moreInfo,
+        details: error.details
       };
     }
   },

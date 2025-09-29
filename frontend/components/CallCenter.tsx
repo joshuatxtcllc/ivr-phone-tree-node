@@ -12,29 +12,68 @@ export default function CallCenter() {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isMuted, setIsMuted] = useState(false)
   const [isSpeakerOn, setIsSpeakerOn] = useState(false)
+  const [callStatus, setCallStatus] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleCall = () => {
-    if (phoneNumber) {
-      setIsCallActive(true)
-      
-      // Make actual call via Twilio API
-      axios.post('/api/calls/make', {
-        to: phoneNumber,
-        from: process.env.VITE_TWILIO_PHONE_NUMBER || '+13466392728'
-      })
-      .then(response => {
-        console.log('Call initiated:', response.data)
-        // Keep call active state for demo purposes
-      })
-      .catch(error => {
-        console.error('Call failed:', error)
-        setIsCallActive(false)
-        
-        // Show more detailed error message
-        const errorMessage = error.response?.data?.error || error.message || 'Unknown error occurred'
-        alert(`Failed to make call: ${errorMessage}`)
-      })
+    if (!phoneNumber) {
+      alert('Please enter a phone number')
+      return
     }
+    
+    // Validate phone number format
+    const cleanNumber = phoneNumber.replace(/\D/g, '')
+    let formattedNumber = phoneNumber
+    
+    if (!phoneNumber.startsWith('+')) {
+      if (cleanNumber.length === 10) {
+        formattedNumber = `+1${cleanNumber}`
+      } else if (cleanNumber.length === 11 && cleanNumber.startsWith('1')) {
+        formattedNumber = `+${cleanNumber}`
+      } else {
+        alert('Please enter a valid US phone number (10 digits)')
+        return
+      }
+    }
+    
+    setIsLoading(true)
+    setCallStatus('Initiating call...')
+      
+    // Make actual call via Twilio API
+    axios.post('/api/calls/make', {
+      to: formattedNumber,
+      from: '+13466392728' // Your Twilio number
+    })
+    .then(response => {
+      console.log('Call initiated:', response.data)
+      setIsCallActive(true)
+      setCallStatus('Call connected')
+      setPhoneNumber(formattedNumber)
+    })
+    .catch(error => {
+      console.error('Call failed:', error)
+      setIsCallActive(false)
+      setCallStatus('')
+      
+      // Show detailed error message
+      const errorData = error.response?.data
+      let errorMessage = 'Unknown error occurred'
+      
+      if (errorData?.error) {
+        errorMessage = errorData.error
+        if (errorData.code) {
+          errorMessage += ` (Code: ${errorData.code})`
+        }
+        if (errorData.moreInfo) {
+          errorMessage += `\nMore info: ${errorData.moreInfo}`
+        }
+      }
+      
+      alert(`Failed to make call: ${errorMessage}`)
+    })
+    .finally(() => {
+      setIsLoading(false)
+    })
   }
 
   const handleHangup = () => {
@@ -42,6 +81,7 @@ export default function CallCenter() {
     setPhoneNumber('')
     setIsMuted(false)
     setIsSpeakerOn(false)
+    setCallStatus('')
   }
 
   return (
@@ -71,12 +111,18 @@ export default function CallCenter() {
               
               <button
                 onClick={handleCall}
-                disabled={!phoneNumber}
+                disabled={!phoneNumber || isLoading}
                 className="w-full flex items-center justify-center px-8 py-4 btn-success disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none text-lg"
               >
                 <PhoneIcon className="w-6 h-6 mr-3" />
-                Call
+                {isLoading ? 'Calling...' : 'Call'}
               </button>
+              
+              {callStatus && (
+                <div className="text-center text-sm text-slate-600 mt-4">
+                  {callStatus}
+                </div>
+              )}
             </div>
           ) : (
             <div className="text-center space-y-8">
@@ -84,7 +130,7 @@ export default function CallCenter() {
                 <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                   <PhoneIcon className="w-10 h-10 text-white" />
                 </div>
-                <p className="text-xl font-bold text-slate-900">Calling...</p>
+                <p className="text-xl font-bold text-slate-900">{callStatus || 'Connected'}</p>
                 <p className="text-slate-600 text-lg">{phoneNumber}</p>
               </div>
               

@@ -14,4 +14,11 @@ router.post('/menu', (req, res) => {
   return res.send(menu(digit));
 });
 
+// POST: /ivr/status - Handle call status callbacks
+router.post('/status', (req, res) => {
+  const { CallSid, CallStatus, From, To } = req.body;
+  console.log('Call status update:', { CallSid, CallStatus, From, To });
+  res.status(200).send('OK');
+});
+
 module.exports = router;

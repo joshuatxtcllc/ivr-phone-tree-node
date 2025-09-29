@@ -12,18 +12,17 @@ router.post('/make', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields: to, from' });
   }
 
-  // Use a more reliable webhook URL construction
-  let webhookUrl;
-  if (url) {
-    webhookUrl = url;
-  } else {
-    // For development, use ngrok URL if available, otherwise construct from request
-    const host = req.get('host');
-    const protocol = req.get('x-forwarded-proto') || req.protocol;
-    webhookUrl = `${protocol}://${host}/ivr/welcome`;
-  }
+  // Construct webhook URL - for development, you'll need ngrok or similar
+  const host = req.get('host');
+  const protocol = req.get('x-forwarded-proto') || req.protocol;
+  const webhookUrl = url || `${protocol}://${host}/ivr/welcome`;
   
   console.log('Using webhook URL:', webhookUrl);
+  
+  // Validate phone number format
+  if (!to.startsWith('+')) {
+    return res.status(400).json({ error: 'Phone number must be in E.164 format (e.g., +1234567890)' });
+  }
   
   const result = await makeCall(to, from, webhookUrl);
   
@@ -32,7 +31,11 @@ router.post('/make', async (req, res) => {
     res.json({ success: true, callSid: result.callSid });
   } else {
     console.error('Call error:', result.error);
-    res.status(500).json({ error: result.error });
+    res.status(500).json({ 
+      error: result.error,
+      code: result.code,
+      moreInfo: result.moreInfo 
+    });
   }
 });
 
